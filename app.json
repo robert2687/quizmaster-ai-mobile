@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "QuizMaster AI",
+    "slug": "quizmaster-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f172a"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.quizmaster.ai"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#7c3aed"
+      },
+      "package": "com.quizmaster.ai",
+      "versionCode": 1,
+      "permissions": ["android.permission.INTERNET", "android.permission.VIBRATE"]
+    },
+    "scheme": "quizmasterai",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      ["expo-splash-screen", { "backgroundColor": "#0f172a", "image": "./assets/splash.png", "imageWidth": 200 }]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
