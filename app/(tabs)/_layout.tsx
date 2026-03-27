@@ -22,7 +22,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Quiz',
-          tabBarIcon: ({ color }) => <Ionicons name="brain" size={22} color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons name="bulb" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
