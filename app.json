@@ -23,16 +23,34 @@
       },
       "package": "com.quizmaster.ai",
       "versionCode": 1,
-      "permissions": ["android.permission.INTERNET", "android.permission.VIBRATE"]
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE"
+      ]
     },
     "scheme": "quizmasterai",
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      ["expo-splash-screen", { "backgroundColor": "#0f172a", "image": "./assets/splash.png", "imageWidth": 200 }]
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0f172a",
+          "image": "./assets/splash.png",
+          "imageWidth": 200
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "@rmd26-2/quizmaster-ai"
+      }
     }
   }
 }
