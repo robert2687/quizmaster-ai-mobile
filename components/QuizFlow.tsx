@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { QuizQuestion } from '../types';
 import TimerBar from './TimerBar';
+import { useTimer } from '../hooks/useTimer';
 
 interface QuizFlowProps {
   questions: QuizQuestion[];
@@ -18,49 +19,95 @@ interface QuizFlowProps {
 
 const SECONDS_PER_QUESTION = 20;
 
-const QuizFlow: React.FC<QuizFlowProps> = ({ questions, onQuizComplete, quizTopic, onAnswer }) => {
+const QuizOption = React.memo(function QuizOption({
+  option,
+  index,
+  hasAnswered,
+  currentQuestion,
+  selectedOption,
+  handleSelectOption,
+}: {
+  option: string;
+  index: number;
+  hasAnswered: boolean;
+  currentQuestion: QuizQuestion;
+  selectedOption: string | null;
+  handleSelectOption: (option: string) => void;
+}) {
+  const getOptionStyle = () => {
+    if (!hasAnswered) return styles.optionDefault;
+    if (option === currentQuestion.correctAnswer) return styles.optionCorrect;
+    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.optionWrong;
+    return styles.optionFaded;
+  };
+
+  const getOptionTextStyle = () => {
+    if (!hasAnswered) return styles.optionTextDefault;
+    if (option === currentQuestion.correctAnswer) return styles.optionTextCorrect;
+    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.optionTextWrong;
+    return styles.optionTextFaded;
+  };
+
+  const getOptionIcon = () => {
+    if (!hasAnswered) return String.fromCharCode(65 + index);
+    if (option === currentQuestion.correctAnswer) return '✓';
+    if (option === selectedOption) return '✗';
+    return String.fromCharCode(65 + index);
+  };
+
+  const getBadgeStyle = () => {
+    if (!hasAnswered) return styles.badgeDefault;
+    if (option === currentQuestion.correctAnswer) return styles.badgeCorrect;
+    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.badgeWrong;
+    return styles.badgeDefault;
+  };
+
+  const getBadgeTextStyle = () => {
+    if (!hasAnswered) return styles.badgeTextDefault;
+    if (option === currentQuestion.correctAnswer) return styles.badgeTextCorrect;
+    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.badgeTextWrong;
+    return styles.badgeTextDefault;
+  };
+
+  const onPress = useCallback(() => handleSelectOption(option), [handleSelectOption, option]);
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={hasAnswered}
+      activeOpacity={0.8}
+      style={[styles.optionBase, getOptionStyle()]}
+    >
+      <View style={[styles.optionBadge, getBadgeStyle()]}>
+        <Text style={[styles.optionBadgeText, getBadgeTextStyle()]}>
+          {getOptionIcon()}
+        </Text>
+      </View>
+      <Text style={[styles.optionText, getOptionTextStyle()]}>{option}</Text>
+    </TouchableOpacity>
+  );
+});
+
+const QuizFlow: React.FC<QuizFlowProps> = React.memo(function QuizFlow({ questions, onQuizComplete, quizTopic, onAnswer }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<QuizQuestion[]>([...questions]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [score, setScore] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(SECONDS_PER_QUESTION);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
-  const percentage = (secondsLeft / SECONDS_PER_QUESTION) * 100;
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
 
   const handleTimeUp = useCallback(() => {
-    stopTimer();
     setHasAnswered(true);
     setAnsweredQuestions(prev => {
       const updated = [...prev];
       updated[currentIndex] = { ...updated[currentIndex], userAnswer: undefined };
       return updated;
     });
-  }, [currentIndex, stopTimer]);
+  }, [currentIndex]);
 
-  const startTimer = useCallback(() => {
-    stopTimer();
-    setSecondsLeft(SECONDS_PER_QUESTION);
-    timerRef.current = setInterval(() => {
-      setSecondsLeft(prev => {
-        if (prev <= 1) {
-          handleTimeUp();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }, [handleTimeUp, stopTimer]);
+  const { secondsLeft, startTimer, stopTimer, percentage } = useTimer(SECONDS_PER_QUESTION, handleTimeUp);
 
   useEffect(() => {
     setSelectedOption(null);
@@ -68,9 +115,9 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ questions, onQuizComplete, quizTopi
     startTimer();
     return () => stopTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex]);
+  }, [currentIndex, startTimer, stopTimer]);
 
-  const handleSelectOption = (option: string) => {
+  const handleSelectOption = useCallback((option: string) => {
     if (hasAnswered) return;
     stopTimer();
     setSelectedOption(option);
@@ -86,7 +133,7 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ questions, onQuizComplete, quizTopi
     });
 
     if (onAnswer) onAnswer(currentQuestion.id, option, currentQuestion);
-  };
+  }, [hasAnswered, stopTimer, currentQuestion, currentIndex, onAnswer, answeredQuestions]);
 
   const handleNext = () => {
     if (isLastQuestion) {
@@ -95,41 +142,6 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ questions, onQuizComplete, quizTopi
     } else {
       setCurrentIndex(i => i + 1);
     }
-  };
-
-  const getOptionStyle = (option: string) => {
-    if (!hasAnswered) return styles.optionDefault;
-    if (option === currentQuestion.correctAnswer) return styles.optionCorrect;
-    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.optionWrong;
-    return styles.optionFaded;
-  };
-
-  const getOptionTextStyle = (option: string) => {
-    if (!hasAnswered) return styles.optionTextDefault;
-    if (option === currentQuestion.correctAnswer) return styles.optionTextCorrect;
-    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.optionTextWrong;
-    return styles.optionTextFaded;
-  };
-
-  const getOptionIcon = (option: string, index: number) => {
-    if (!hasAnswered) return String.fromCharCode(65 + index);
-    if (option === currentQuestion.correctAnswer) return '✓';
-    if (option === selectedOption) return '✗';
-    return String.fromCharCode(65 + index);
-  };
-
-  const getBadgeStyle = (option: string) => {
-    if (!hasAnswered) return styles.badgeDefault;
-    if (option === currentQuestion.correctAnswer) return styles.badgeCorrect;
-    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.badgeWrong;
-    return styles.badgeDefault;
-  };
-
-  const getBadgeTextStyle = (option: string) => {
-    if (!hasAnswered) return styles.badgeTextDefault;
-    if (option === currentQuestion.correctAnswer) return styles.badgeTextCorrect;
-    if (option === selectedOption && option !== currentQuestion.correctAnswer) return styles.badgeTextWrong;
-    return styles.badgeTextDefault;
   };
 
   return (
@@ -175,20 +187,15 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ questions, onQuizComplete, quizTopi
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, i) => (
-            <TouchableOpacity
+            <QuizOption
               key={i}
-              onPress={() => handleSelectOption(option)}
-              disabled={hasAnswered}
-              activeOpacity={0.8}
-              style={[styles.optionBase, getOptionStyle(option)]}
-            >
-              <View style={[styles.optionBadge, getBadgeStyle(option)]}>
-                <Text style={[styles.optionBadgeText, getBadgeTextStyle(option)]}>
-                  {getOptionIcon(option, i)}
-                </Text>
-              </View>
-              <Text style={[styles.optionText, getOptionTextStyle(option)]}>{option}</Text>
-            </TouchableOpacity>
+              option={option}
+              index={i}
+              hasAnswered={hasAnswered}
+              currentQuestion={currentQuestion}
+              selectedOption={selectedOption}
+              handleSelectOption={handleSelectOption}
+            />
           ))}
         </View>
 
@@ -208,7 +215,7 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ questions, onQuizComplete, quizTopi
       </View>
     </ScrollView>
   );
-};
+});
 
 export default QuizFlow;
 
