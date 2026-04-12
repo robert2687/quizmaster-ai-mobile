@@ -53,30 +53,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // Map AppView to expo-router routes
     switch (v) {
       case 'home':
-        router.push('/(tabs)/');
+        router.push('/(tabs)' as any);
         break;
       case 'profiles':
-        router.push('/(tabs)/profile');
+        router.push('/(tabs)/profile' as any);
         break;
       case 'tournaments':
-        router.push('/(tabs)/tournaments');
+        router.push('/(tabs)/tournaments' as any);
         break;
       case 'tournament-detail':
         if (param) router.push(`/tournament/${param}` as any);
         break;
       case 'teams':
-        router.push('/(tabs)/teams');
+        router.push('/(tabs)/teams' as any);
         break;
       case 'multiplayer':
       case 'session-lobby':
       case 'session-game':
-        router.push('/(tabs)/multiplayer');
+        router.push('/(tabs)/multiplayer' as any);
         break;
       case 'daily':
-        router.push('/(tabs)/daily');
+        router.push('/(tabs)/daily' as any);
         break;
       case 'achievements':
-        router.push('/(tabs)/achievements');
+        router.push('/(tabs)/achievements' as any);
         break;
     }
   };
