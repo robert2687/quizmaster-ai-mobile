@@ -19,7 +19,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 
 type Mode = 'menu' | 'host-setup' | 'join-input' | 'lobby' | 'playing' | 'results';
 
-function PlayerAvatar({ player }: { player: SessionPlayer }) {
+const PlayerAvatar = React.memo(function PlayerAvatar({ player }: { player: SessionPlayer }) {
   return (
     <View style={[styles.playerAvatarContainer, !player.connected && { opacity: 0.4 }]}>
       <View style={[styles.playerAvatar, player.is_host && styles.playerAvatarHost]}>
@@ -33,14 +33,14 @@ function PlayerAvatar({ player }: { player: SessionPlayer }) {
       {player.is_host && <Text style={styles.hostBadge}>HOST</Text>}
     </View>
   );
-}
+});
 
 interface ScoreBoardProps {
   players: any[];
   currentProfileId?: string;
 }
 
-function ScoreBoard({ players, currentProfileId }: ScoreBoardProps) {
+const ScoreBoard = React.memo(function ScoreBoard({ players, currentProfileId }: ScoreBoardProps) {
   const sorted = [...(players || [])].sort((a, b) => (b.score || 0) - (a.score || 0));
   return (
     <View style={styles.scoreBoard}>
@@ -60,7 +60,7 @@ function ScoreBoard({ players, currentProfileId }: ScoreBoardProps) {
       ))}
     </View>
   );
-}
+});
 
 export default function MultiplayerScreen() {
   const { activeProfile } = useApp();
