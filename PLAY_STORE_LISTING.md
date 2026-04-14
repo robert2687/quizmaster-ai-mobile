@@ -115,34 +115,52 @@ Host your privacy policy at a public URL before submitting. Key points:
 
 ## Build & Submit Commands
 
-### Install dependencies
+### 1. Create `.env` with your credentials
+```bash
+cp .env.example .env
+# Edit .env and fill in EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY
+```
+
+### 2. Install dependencies
 ```bash
 cd quizmaster-ai-mobile
 npm install
 ```
 
-### Preview build (APK for testing)
+### 3. Preview build (APK for testing on a real device)
 ```bash
 npx eas build --platform android --profile preview
 ```
 
-### Production build (AAB for Play Store)
+### 4. Production build (AAB for Play Store)
 ```bash
 npx eas build --platform android --profile production
 ```
 
-### Submit to Play Store (after setup)
+### 5. Submit to Play Store
+
+First, create a Google Play service-account key in the Google Play Console
+(Setup → API access → Create service account) and save it as `google-play-key.json`
+in the project root. This file is listed in `.gitignore` and must **never** be committed.
+
 ```bash
-npx eas submit --platform android
+npx eas submit --platform android --profile production
 ```
 
+---
+
 ### Pre-submission checklist
-- [ ] EAS account created at expo.dev
+- [ ] `.env` created locally with Supabase credentials
+- [ ] EAS account created at expo.dev and `eas.json` `projectId` updated to your UUID
 - [ ] Google Play Console account ($25 one-time fee)
-- [ ] App signed with production keystore (EAS manages this)
-- [ ] Privacy policy URL added to Play Console
-- [ ] At least 2 screenshots uploaded per device type
+- [ ] App signed with production keystore (EAS manages this automatically)
+- [ ] `google-play-key.json` placed in project root (not committed)
+- [ ] Privacy policy hosted at a public URL (see `PRIVACY_POLICY.md`)
+- [ ] Privacy policy URL entered in Play Console (App content → Privacy policy)
+- [ ] At least 2 phone screenshots uploaded (recommended: 8 screens listed above)
+- [ ] Feature graphic (1024 × 500 px) uploaded to Play Console
 - [ ] Content rating questionnaire completed in Play Console
-- [ ] App reviewed internally on a real Android device
+- [ ] App tested internally on a real Android device (API 26+)
 - [ ] All 7 tabs tested end-to-end
 - [ ] Daily challenge tested with a real Supabase daily quiz entry
+- [ ] Release notes added to Play Console under the production release
