@@ -23,6 +23,10 @@
       },
       "package": "com.quizmaster.ai",
       "versionCode": 1,
+      "compileSdkVersion": 35,
+      "targetSdkVersion": 35,
+      "minSdkVersion": 26,
+      "edgeToEdgeLayoutEnabled": true,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.VIBRATE"
