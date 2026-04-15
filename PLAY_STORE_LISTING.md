@@ -3,7 +3,7 @@
 ## App Details
 
 | Field | Value |
-|-------|-------|
+| ------- | ------- |
 | **App Name** | QuizMaster AI |
 | **Package** | com.quizmaster.ai |
 | **Category** | Education / Trivia & Word Games |
@@ -15,14 +15,16 @@
 ---
 
 ## Short Description (80 chars max)
-```
+
+```text
 Generate AI quizzes on any topic and compete with friends in real time.
 ```
 
 ---
 
 ## Full Description (4000 chars max)
-```
+
+```text
 QuizMaster AI transforms any topic into an engaging quiz in seconds, powered by Google's Gemini AI. Challenge yourself, compete with friends, and climb the leaderboards.
 
 🧠 AI QUIZ GENERATOR
@@ -55,11 +57,13 @@ No account required. No ads. No paywalls. Just pure quiz fun.
 ---
 
 ## Keywords / Tags
+
 quiz, trivia, AI quiz, quiz generator, multiplayer quiz, daily challenge, tournament, brain game, knowledge test, Gemini AI, education, learning game
 
 ---
 
 ## Screenshots Needed (Phone — 1080x1920 or 1284x2778)
+
 Capture these screens in the app:
 
 1. **Home/Quiz Screen** — Topic input with "Generate Quiz" button, dark theme
@@ -74,6 +78,7 @@ Capture these screens in the app:
 ---
 
 ## Content Rating Questionnaire (IARC)
+
 - Violence: None
 - Sexual content: None
 - Profanity: None
@@ -84,12 +89,16 @@ Capture these screens in the app:
 - Ads: None
 - In-app purchases: None
 
-**Result: PEGI 3 / Everyone**
+### Result
+
+PEGI 3 / Everyone
 
 ---
 
 ## Privacy Policy (Required for Play Store)
+
 Host your privacy policy at a public URL before submitting. Key points:
+
 - Anonymous Supabase auth (no PII collected)
 - Quiz topics entered by users are sent to Google Gemini API
 - No data sold to third parties
@@ -98,7 +107,8 @@ Host your privacy policy at a public URL before submitting. Key points:
 ---
 
 ## Release Notes (What's New — v1.0.0)
-```
+
+```text
 🎉 Initial release!
 
 • AI-powered quiz generator on any topic
@@ -116,25 +126,29 @@ Host your privacy policy at a public URL before submitting. Key points:
 ## Build & Submit Commands
 
 ### 1. Create `.env` with your credentials
+
 ```bash
 cp .env.example .env
 # Edit .env and fill in EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY
 ```
 
 ### 2. Install dependencies
+
 ```bash
 cd quizmaster-ai-mobile
 npm install
 ```
 
 ### 3. Preview build (APK for testing on a real device)
+
 ```bash
-npx eas build --platform android --profile preview
+npm run build:android:preview
 ```
 
 ### 4. Production build (AAB for Play Store)
+
 ```bash
-npx eas build --platform android --profile production
+npm run build:android:production
 ```
 
 ### 5. Submit to Play Store
@@ -144,14 +158,15 @@ First, create a Google Play service-account key in the Google Play Console
 in the project root. This file is listed in `.gitignore` and must **never** be committed.
 
 ```bash
-npx eas submit --platform android --profile production
+npm run submit:android:production
 ```
 
 ---
 
 ### Pre-submission checklist
+
 - [ ] `.env` created locally with Supabase credentials
-- [ ] EAS account created at expo.dev and `eas.json` `projectId` updated to your UUID
+- [ ] EAS account created at expo.dev and `app.json -> expo.extra.eas.projectId` set to your EAS project ID
 - [ ] Google Play Console account ($25 one-time fee)
 - [ ] App signed with production keystore (EAS manages this automatically)
 - [ ] `google-play-key.json` placed in project root (not committed)
